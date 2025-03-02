@@ -1,7 +1,9 @@
 import minimist from "minimist";
 import smolToml from "smol-toml";
 import fs from "fs";
+import path from "path";
 
+let executableName = path.basename(process.argv[1], ".exe");
 let config = {};
 let configChangedListeners = [];
 
@@ -38,6 +40,15 @@ function init() {
       _setConfig(newConfig);
     } catch (error) {
       console.error("Error parsing config input:", error);
+    }
+  }
+  else if (fs.existsSync(executableName + ".toml")){
+    try {
+      let fileContents = fs.readFileSync(executableName + ".toml", "utf8");
+      let newConfig = smolToml.parse(fileContents);
+      _setConfig(newConfig);
+    } catch (error) {
+      console.error("Error parsing default config file:", error);
     }
   }
   else if (fs.existsSync("config.toml")){
