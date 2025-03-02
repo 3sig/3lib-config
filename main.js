@@ -39,7 +39,12 @@ function init() {
     }
   }
   else {
-    _configChanged();
+    try {
+      let newConfig = smolToml.parseFile("config.toml");
+      _setConfig(newConfig);
+    } catch (error) {
+      console.error("Error parsing default config file:", error);
+    }
   }
 }
 
