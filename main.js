@@ -1,5 +1,6 @@
 import minimist from "minimist";
 import smolToml from "smol-toml";
+import fs from "fs";
 
 let config = {};
 let configChangedListeners = [];
@@ -25,7 +26,8 @@ function init() {
   let argv = minimist(process.argv.slice(2));
   if (argv.f) {
     try {
-      let newConfig = smolToml.parseFile(argv.f);
+      let fileContents = fs.readFileSync(argv.f, "utf8");
+      let newConfig = smolToml.parse(fileContents);
       _setConfig(newConfig);
     } catch (error) {
       console.error("Error parsing config file:", error);
@@ -38,13 +40,17 @@ function init() {
       console.error("Error parsing config input:", error);
     }
   }
-  else {
+  else if (fs.existsSync("config.toml")){
     try {
-      let newConfig = smolToml.parseFile("config.toml");
+      let fileContents = fs.readFileSync("config.toml", "utf8");
+      let newConfig = smolToml.parse(fileContents);
       _setConfig(newConfig);
     } catch (error) {
       console.error("Error parsing default config file:", error);
     }
+  }
+  else {
+    _setConfig({});
   }
 }
 
