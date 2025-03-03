@@ -8,14 +8,24 @@ let executableName = path.basename(process.argv[1], ".exe");
 let config = {};
 let configChangedListeners = [];
 
-function get(field, defaultValue) {
+function _get(c, field, defaultValue) {
   if (field === undefined) {
-    return config;
-  }
-  if (config[field] === undefined) {
-    return defaultValue;
-  }
-  return config[field];
+      return c;
+    }
+
+    let slashSplit = field.split("/");
+    if (slashSplit.length > 1) {
+      return _get(c[slashSplit[0]], slashSplit.slice(1).join("/"), defaultValue);
+    }
+
+    if (c[field] === undefined) {
+      return defaultValue;
+    }
+    return c[field];
+}
+
+function get(field, defaultValue) {
+  return _get(config, field, defaultValue);
 }
 
 function addListener(callback) {

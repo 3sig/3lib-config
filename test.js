@@ -1,7 +1,8 @@
 import config from './main.js';
 
 config.addListener(() => {
-  console.log("hello: ", config.get("hello", "default_value"));
+  console.log("world: ", config.get("world", "default_value"));
+  console.log("hello: ", config.get("hello/world", "default_value"));
 });
 
 config.init();
