@@ -1,6 +1,6 @@
 {
   "name": "3lib-config",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "A library to load and watch for changes from a toml configuration file, or optionally receive from commandline arguments",
   "main": "main.js",
   "type": "module",
