@@ -4,7 +4,6 @@ import fs from "fs";
 import path from "path";
 import chokidar from "chokidar";
 
-let executableName = path.basename(process.argv[1], ".exe");
 let config = {};
 let configChangedListeners = [];
 
@@ -60,8 +59,10 @@ function _watchConfigFile(filename) {
   updateConfig();
 }
 
-function init() {
-  let argv = minimist(process.argv.slice(2));
+function init(customArgs) {
+  let args = customArgs || process.argv;
+  let executableName = path.basename(args[1], ".exe");
+  let argv = minimist(args.slice(2));
   if (argv.f) {
     _watchConfigFile(argv.f);
   } else if (argv._.length === 1) {
