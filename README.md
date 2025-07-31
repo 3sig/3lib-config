@@ -7,10 +7,10 @@
 3lib-config projects can be configured in one of many ways:
 
 - without arguments:
-  - `EXECUTABLE_NAME.toml` in the same directory as the executable OR
-  - `config.toml` in the same directory as the executable, if the above file does not exist
+  - `EXECUTABLE_NAME.json5` in the same directory as the executable OR
+  - `config.json5` in the same directory as the executable, if the above file does not exist
 - the `-f` flag specifies a config file:
-  - `executable_name -f config_name.toml`
+  - `executable_name -f config_name.json5`
 - URI encoded config as the input:
   - `executable_name test1=3%0Atest2=4`
 
@@ -37,11 +37,14 @@ bun i github:3sig/3lib-config
 ```
 
 import and use.
-example config.toml:
+example config.json5:
 ```
-test = "value"
-[parent]
-child = "nested value"
+{
+  test: "value",
+  parent: {
+    child: "nested value",
+  },
+}
 ```
 
 js:

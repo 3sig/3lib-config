@@ -1,5 +1,5 @@
 import minimist from "minimist";
-import smolToml from "smol-toml";
+import * as fleece from 'golden-fleece';
 import fs from "fs";
 import path from "path";
 import chokidar from "chokidar";
@@ -44,7 +44,7 @@ function _watchConfigFile(filename) {
   function updateConfig() {
     try {
         let fileContents = fs.readFileSync(filename, "utf8");
-        let newConfig = smolToml.parse(fileContents);
+        let newConfig = fleece.evaluate(fileContents);
         _setConfig(newConfig);
       } catch (error) {
         console.error("Error parsing config file:", error);
@@ -67,17 +67,17 @@ function init(customArgs) {
     _watchConfigFile(argv.f);
   } else if (argv._.length === 1) {
     try {
-      let newConfig = smolToml.parse(decodeURI(argv._[0]));
+      let newConfig = fleece.evaluate(decodeURI(argv._[0]));
       _setConfig(newConfig);
     } catch (error) {
       console.error("Error parsing config input:", error);
     }
   }
-  else if (fs.existsSync(executableName + ".toml")){
-    _watchConfigFile(executableName + ".toml");
+  else if (fs.existsSync(executableName + ".json5")){
+    _watchConfigFile(executableName + ".json5");
   }
-  else if (fs.existsSync("config.toml")){
-    _watchConfigFile("config.toml");
+  else if (fs.existsSync("config.json5")){
+    _watchConfigFile("config.json5");
   }
   else {
     _setConfig({});
