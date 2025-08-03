@@ -47,7 +47,7 @@ function _watchConfigFile(filename) {
         let newConfig = fleece.evaluate(fileContents);
         _setConfig(newConfig);
       } catch (error) {
-        console.error("Error parsing config file:", error);
+        console.error("Error parsing config file. filename:", filename, "error: ", error);
       }
   }
   let watcher = chokidar.watch(filename, {
