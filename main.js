@@ -62,6 +62,7 @@ function _watchConfigFile(filename) {
   }
   let watcher = chokidar.watch(filename, {
     awaitWriteFinish: true,
+    persistent: false,
     atomic: true,
   });
   watcher.on("change", updateConfig);
