@@ -6,6 +6,7 @@ import chokidar from "chokidar";
 
 let config = {};
 let configChangedListeners = [];
+let configFilename = null;
 
 function _get(c, field, defaultValue) {
   if (c === undefined) {
@@ -29,6 +30,10 @@ function _get(c, field, defaultValue) {
 
 function get(field, defaultValue) {
   return _get(config, field, defaultValue);
+}
+
+function getConfigFilename() {
+  return configFilename;
 }
 
 function addListener(callback) {
@@ -75,25 +80,37 @@ function init(customArgs) {
   let executableName = path.basename(args[1], ".exe");
   let argv = minimist(args.slice(2));
   if (argv.f) {
+    configFilename = argv.f;
     _watchConfigFile(argv.f);
   } else if (argv._.length === 1) {
     try {
       let newConfig = fleece.evaluate(decodeURI(argv._[0]));
       _setConfig(newConfig);
+      // configFilename remains null when config is passed via command line
     } catch (error) {
       console.error("Error parsing config input:", error);
     }
-  } else if (fs.existsSync(executableName + ".json5")) {
-    _watchConfigFile(executableName + ".json5");
-  } else if (fs.existsSync("config.json5")) {
-    _watchConfigFile("config.json5");
   } else {
-    _setConfig({});
+    // Try to find a config file to watch
+    let configFileToWatch = null;
+    if (fs.existsSync(executableName + ".json5")) {
+      configFileToWatch = executableName + ".json5";
+    } else if (fs.existsSync("config.json5")) {
+      configFileToWatch = "config.json5";
+    }
+
+    if (configFileToWatch) {
+      configFilename = configFileToWatch;
+      _watchConfigFile(configFileToWatch);
+    } else {
+      _setConfig({});
+    }
   }
 }
 
 export default {
   get,
+  getConfigFilename,
   addListener,
   init,
 };
